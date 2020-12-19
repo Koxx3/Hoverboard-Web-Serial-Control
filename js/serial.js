@@ -27,7 +27,7 @@ class Serial {
 
     this.fieldsAscii = {1:'in1',
                         2:'in2',
-                        3:'cmdR',
+                        3:'currentDC',
                         4:'cmdL',
                         5:'BatADC',
                         6:'BatV',
@@ -235,7 +235,7 @@ class Serial {
     let message = {};
     message.cmd1     = this.readdv.getInt16(2,true);
     message.cmd2     = this.readdv.getInt16(4,true);
-    message.speedR   = this.readdv.getInt16(6,true);
+    message.currentDC= this.readdv.getInt16(6,true);
     message.speedL   = this.readdv.getInt16(8,true);
     message.BatV     = this.readdv.getInt16(10,true);
     message.Temp     = this.readdv.getInt16(12,true);
@@ -244,7 +244,7 @@ class Serial {
     let calcChecksum = frame ^ 
                        message.cmd1 ^ 
                        message.cmd2 ^ 
-                       message.speedR ^ 
+                       message.currentDC ^ 
                        message.speedL ^ 
                        message.BatV ^ 
                        message.Temp ^ 
