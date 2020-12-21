@@ -18,13 +18,41 @@ class Serial {
     this.error = 0;
     this.skip = 0;
     this.success = 0;
-    this.serial_start_frame = 0xABCD;
-    this.serial_length = 8;
+    this.serial_start_frame_display_to_esc = 0xA5;
+    this.serial_start_frame_esc_to_display = 0x5A;
+    this.serial_length = 23;
     this.ibus_length = 0x20;
     this.ibus_command = 0x40;
     this.lastStatsUpdate = Date.now();
     this.statsUpdateFrequency = 500;
+	this.checksum = 0;
+	
+	
+this.Frame_start                = 0x00   ;
+this.Type                       = 0x00   ;
+this.Destination                = 0x00   ;
+this.Number_of_ESC              = 0x00   ;
+this.BMS_protocol               = 0x00   ;
+this.ESC_Jumps                  = 0x00   ;
+this.Display_Version_Maj        = 0x00   ;
+this.Display_Version_Main       = 0x00   ;
+this.Power_ON                   = 0x00   ;
+this.Throttle                   = 0x00   ;
+this.Brake                      = 0x00    ;
+this.Torque                     = 0x00    ;
+this.Brake_torque               = 0x00    ;
+this.Lock                       = 0x00    ;
+this.Regulator                  = 0x00    ;
+this.Motor_direction            = 0x00    ;
+this.Hall_sensors_direction     = 0x00    ;
+this.Ligth_power                = 0x00    ;
+this.Max_temperature_reduce     = 0x00    ;
+this.Max_temperature_shutdown   = 0x00    ;
+this.Speed_limit_               = 0x00    ;
+this.Motor_start_speed          = 0x00    ;
+this.CRC8                       = 0x00    ;
 
+	
     this.fieldsAscii = {1:'in1',
                         2:'in2',
                         3:'currentDC',
@@ -228,16 +256,17 @@ class Serial {
     }
     
     let frame = this.readdv.getUint16(0,true);
-    if (frame != this.serial_start_frame){
+    if (frame != this.serial_start_frame_esc_to_display){
       this.skipByte();    
       return;
     }
 
     let message = {};
+
     message.cmd1     		= this.readdv.getInt16(2,true);
     message.cmd2     		= this.readdv.getInt16(4,true);
     message.currentDC		= this.readdv.getInt16(6,true);
-    message.speedMeas   		= this.readdv.getInt16(8,true);
+    message.speedMeas   	= this.readdv.getInt16(8,true);
     message.BatV     		= this.readdv.getInt16(10,true);
     message.Temp     		= this.readdv.getInt16(12,true);
     message.currentMaxPhA   = this.readdv.getInt16(14,true);
@@ -332,11 +361,58 @@ class Serial {
     var ab = new ArrayBuffer(serial.protocol == "usart" ? this.serial_length : this.ibus_length );
     var dv = new DataView(ab);
 
+	this.Brake = control.channel[1] / 4;
+	this.Throttle = control.channel[0] / 4;
+
     if (serial.protocol == "usart"){
-      dv.setUint16(0,this.serial_start_frame,true);
-      dv.setInt16(2, control.channel[0],true);
-      dv.setInt16(4, control.channel[1],true);
-      dv.setUint16(6,this.serial_start_frame ^ control.channel[0] ^ control.channel[1],true);
+      dv.setUint8(0,  this.serial_start_frame_display_to_esc,true);
+	  dv.setUint8(1,  this.Type                             ,true);
+	  dv.setUint8(2,  this.Destination                      ,true);
+	  dv.setUint8(3,  this.Number_of_ESC                    ,true);
+	  dv.setUint8(4,  this.BMS_protocol                     ,true);
+	  dv.setUint8(5,  this.ESC_Jumps                        ,true);
+	  dv.setUint8(6,  this.Display_Version_Maj              ,true);
+	  dv.setUint8(7,  this.Display_Version_Main             ,true);
+	  dv.setUint8(8,  this.Power_ON                         ,true);
+	  dv.setUint8(9,  this.Throttle                         ,true);
+	  dv.setUint8(10, this.Brake                            ,true);
+	  dv.setUint8(11, this.Torque                           ,true);
+	  dv.setUint8(12, this.Brake_torque                     ,true);
+	  dv.setUint8(13, this.Lock                             ,true);
+	  dv.setUint8(14, this.Regulator                        ,true);
+	  dv.setUint8(15, this.Motor_direction                  ,true);
+	  dv.setUint8(16, this.Hall_sensors_direction           ,true);
+	  dv.setUint8(17, this.Ligth_power                      ,true);
+	  dv.setUint8(18, this.Max_temperature_reduce           ,true);
+	  dv.setUint8(19, this.Max_temperature_shutdown         ,true);
+	  dv.setUint8(20, this.Speed_limit_                     ,true);
+	  dv.setUint8(21, this.Motor_start_speed                ,true);
+
+      this.checksum = this.serial_start_frame_display_to_esc //
+		^ this.Type                       //
+		^ this.Destination                //
+		^ this.Number_of_ESC              //
+		^ this.BMS_protocol               //
+		^ this.ESC_Jumps                  //
+		^ this.Display_Version_Maj        //
+		^ this.Display_Version_Main       //
+		^ this.Power_ON                   //
+		^ this.Throttle                   //
+		^ this.Brake                      //
+		^ this.Torque                     //
+		^ this.Brake_torque               //
+		^ this.Lock                       //
+		^ this.Regulator                  //
+		^ this.Motor_direction            //
+		^ this.Hall_sensors_direction     //
+		^ this.Ligth_power                //
+		^ this.Max_temperature_reduce     //
+		^ this.Max_temperature_shutdown   //
+		^ this.Speed_limit_               //
+		^ this.Motor_start_speed            ;
+	  
+      dv.setUint8(22, this.checksum, true);
+		
       let bytes = new Uint8Array(ab);
       this.send(bytes);
     }else{
