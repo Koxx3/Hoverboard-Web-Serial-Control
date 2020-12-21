@@ -10,7 +10,7 @@ class Serial {
     this.bufferSize = size;
     this.writeBuffer = new ArrayBuffer(this.bufferSize);
     this.writedv = new DataView(this.writeBuffer);
-    this.messageSize = 20;
+    this.messageSize = 59;
     this.readBuffer = new ArrayBuffer(this.messageSize);
     this.readdv = new DataView(this.readBuffer);
     this.writeOffset = 0;
@@ -255,7 +255,7 @@ this.CRC8                       = 0x00    ;
       this.readdv.setUint8(i,val,true);
     }
     
-    let frame = this.readdv.getUint16(0,true);
+    let frame = this.readdv.getUint8(0,true);
     if (frame != this.serial_start_frame_esc_to_display){
       this.skipByte();    
       return;
@@ -263,6 +263,7 @@ this.CRC8                       = 0x00    ;
 
     let message = {};
 
+/*
     message.cmd1     		= this.readdv.getInt16(2,true);
     message.cmd2     		= this.readdv.getInt16(4,true);
     message.currentDC		= this.readdv.getInt16(6,true);
@@ -272,28 +273,160 @@ this.CRC8                       = 0x00    ;
     message.currentMaxPhA   = this.readdv.getInt16(14,true);
     message.speedMotor      = this.readdv.getInt16(16,true);
     message.checksum 		= this.readdv.getUint16(18,true);
-    let calcChecksum = frame ^ 
-                       message.cmd1 ^ 
-                       message.cmd2 ^ 
-                       message.currentDC ^ 
-                       message.speedMeas ^ 
-                       message.BatV ^ 
-                       message.Temp ^ 
-                       message.currentMaxPhA ^ 
-                       message.speedMotor;
+	*/
+	
+	let i = 1;
+	
+	message.Type                                = this.readdv.getUint8(i,true); i++;
+	message.ESC_Version_Maj                     = this.readdv.getUint8(i,true); i++;
+	message.ESC_Version_Min                     = this.readdv.getUint8(i,true); i++;
+	message.Throttle                            = this.readdv.getUint8(i,true); i++;
+	message.Brake                               = this.readdv.getUint8(i,true); i++;
+	message.Controller_Voltage_LSB              = this.readdv.getUint8(i,true); i++;
+	message.Controller_Voltage_MSB              = this.readdv.getUint8(i,true); i++;
+	message.Controller_Current_LSB              = this.readdv.getUint8(i,true); i++;
+	message.Controller_Current_MSB              = this.readdv.getUint8(i,true); i++;
+	message.MOSFET_temperature                  = this.readdv.getUint8(i,true); i++;
+	message.ERPM_LSB                            = this.readdv.getUint8(i,true); i++;
+	message.ERPM_MSB                            = this.readdv.getUint8(i,true); i++;
+	message.Lock_status                         = this.readdv.getUint8(i,true); i++;
+	message.Ligth_status                        = this.readdv.getUint8(i,true); i++;
+	message.Regulator_status                    = this.readdv.getUint8(i,true); i++;
+	message.Phase_1_current_max_LSB             = this.readdv.getUint8(i,true); i++;
+	message.Phase_1_current_max_MSB             = this.readdv.getUint8(i,true); i++;
+	message.Phase_1_voltage_max_LSB             = this.readdv.getUint8(i,true); i++;
+	message.Phase_1_voltage_max_MSB             = this.readdv.getUint8(i,true); i++;
+	message.BMS_Version_Maj                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_Version_Min                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_voltage_LSB                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_voltage_MSB                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_Current_LSB                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_Current_MSB                     = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_1            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_2            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_3            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_4            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_5            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_6            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_7            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_8            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_9            = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_10           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_11           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_12           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_13           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_14           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_15           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_16           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_17           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_18           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_19           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_20           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_21           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_22           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_23           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Cells_status_group_24           = this.readdv.getUint8(i,true); i++;
+	message.BMS_Battery_tempature_1             = this.readdv.getUint8(i,true); i++;
+	message.BMS_Battery_tempature_2             = this.readdv.getUint8(i,true); i++;
+	message.BMS_Charge_cycles_full_LSB          = this.readdv.getUint8(i,true); i++;
+	message.BMS_Charge_cycles_full_MSB          = this.readdv.getUint8(i,true); i++;
+	message.BMS_Charge_cycles_partial_LSB       = this.readdv.getUint8(i,true); i++;
+	message.BMS_Charge_cycles_partial_MSB       = this.readdv.getUint8(i,true); i++;
+	message.Errors_LSB                          = this.readdv.getUint8(i,true); i++;
+	message.Errors_MSB                          = this.readdv.getUint8(i,true); i++;
+	message.CRC8                                = this.readdv.getUint8(i,true); i++;
+	
+	
+    let calcChecksum = frame
+                        ^ message.Type                                        //
+						^ message.ESC_Version_Maj                             //
+						^ message.ESC_Version_Min                             //
+						^ message.Throttle                                    //
+						^ message.Brake                                       //
+						^ message.Controller_Voltage_LSB                      //
+						^ message.Controller_Voltage_MSB                      //
+						^ message.Controller_Current_LSB                      //
+						^ message.Controller_Current_MSB                      //
+						^ message.MOSFET_temperature                          //
+						^ message.ERPM_LSB                                    //
+						^ message.ERPM_MSB                                    //
+						^ message.Lock_status                                 //
+						^ message.Ligth_status                                //
+						^ message.Regulator_status                            //
+						^ message.Phase_1_current_max_LSB                     //
+						^ message.Phase_1_current_max_MSB                     //
+						^ message.Phase_1_voltage_max_LSB                     //
+						^ message.Phase_1_voltage_max_MSB                     //
+						^ message.BMS_Version_Maj                             //
+						^ message.BMS_Version_Min                             //
+						^ message.BMS_voltage_LSB                             //
+						^ message.BMS_voltage_MSB                             //
+						^ message.BMS_Current_LSB                             //
+						^ message.BMS_Current_MSB                             //
+						^ message.BMS_Cells_status_group_1                    //
+						^ message.BMS_Cells_status_group_2                    //
+						^ message.BMS_Cells_status_group_3                    //
+						^ message.BMS_Cells_status_group_4                    //
+						^ message.BMS_Cells_status_group_5                    //
+						^ message.BMS_Cells_status_group_6                    //
+						^ message.BMS_Cells_status_group_7                    //
+						^ message.BMS_Cells_status_group_8                    //
+						^ message.BMS_Cells_status_group_9                    //
+						^ message.BMS_Cells_status_group_10                   //
+						^ message.BMS_Cells_status_group_11                   //
+						^ message.BMS_Cells_status_group_12                   //
+						^ message.BMS_Cells_status_group_13                   //
+						^ message.BMS_Cells_status_group_14                   //
+						^ message.BMS_Cells_status_group_15                   //
+						^ message.BMS_Cells_status_group_16                   //
+						^ message.BMS_Cells_status_group_17                   //
+						^ message.BMS_Cells_status_group_18                   //
+						^ message.BMS_Cells_status_group_19                   //
+						^ message.BMS_Cells_status_group_20                   //
+						^ message.BMS_Cells_status_group_21                   //
+						^ message.BMS_Cells_status_group_22                   //
+						^ message.BMS_Cells_status_group_23                   //
+						^ message.BMS_Cells_status_group_24                   //
+						^ message.BMS_Battery_tempature_1                     //
+						^ message.BMS_Battery_tempature_2                     //
+						^ message.BMS_Charge_cycles_full_LSB                  //
+						^ message.BMS_Charge_cycles_full_MSB                  //
+						^ message.BMS_Charge_cycles_partial_LSB               //
+						^ message.BMS_Charge_cycles_partial_MSB               //
+						^ message.Errors_LSB                                  //
+						^ message.Errors_MSB                                  //
+					   ;
     
+	message.Controller_Voltage = message.Controller_Voltage_LSB && (message.Controller_Voltage_MSB << 8);
+	message.Controller_Current = message.Controller_Current_LSB && (message.Controller_Current_MSB << 8);
+	message.ERPM = message.ERPM_LSB && (message.ERPM_MSB << 8);
+	message.Phase_1_current_max = message.Phase_1_current_max_LSB && (message.Phase_1_current_max_MSB << 8);
+	message.Phase_1_voltage_max = message.Phase_1_voltage_max_LSB && (message.Phase_1_voltage_max_MSB << 8);
+
+	var messageFiltered = Object.keys(message).reduce((acc, elem) => {
+		if (!elem.startsWith("BMS") && !elem.startsWith("CRC") && !elem.startsWith("ESC_Version") && !elem.startsWith("Type") && !elem.endsWith("LSB")  && !elem.endsWith("MSB") ) acc[elem] = message[elem]
+		return acc
+	}, {})
+	//console.log(messageFiltered)
+
     // Trick to convert calculated Checksum to unsigned
-    this.readdv.setInt16(16,calcChecksum,true);
-    calcChecksum = this.readdv.getUint16(16,true);
-    
-    if ( message.checksum == calcChecksum ){
+    //this.readdv.setInt16(16,calcChecksum,true);
+    //calcChecksum = this.readdv.getUint16(16,true);
+
+//	  return !obj[0].startsWith("BMS") && !obj[0].startsWith("CRC") && !obj[0].startsWith("ESC_Version") && !obj[0].startsWith("Type") && !obj[0].endsWith("LSB")  && !obj[0].endsWith("MSB") ;
+	
+//	let messageFiltered2 = Object.keys( message ).filter( function(key){ return true; });
+		
+    if ( message.CRC8 == calcChecksum ){
+		
+	
       this.success++;
-      graph.updateData(message);
-      control.updateTelemetry(message);
-      log.writeLog(message);
+      graph.updateData(messageFiltered);
+      control.updateTelemetry(messageFiltered);
+      log.writeLog(messageFiltered);
     }else{  
       this.error++;
-      log.write(Object.keys( message ).map( function(key){ return key + ":" +message[key] }).join(" "),2);
+      log.write(Object.keys( messageFiltered ).map( function(key){ return key + ":" +messageFiltered[key] }).join(" "),2);
     }
 
     this.setReadOffset(this.readOffset + this.messageSize); // increase read offset by message size
@@ -362,7 +495,11 @@ this.CRC8                       = 0x00    ;
     var dv = new DataView(ab);
 
 	this.Brake = control.channel[1] / 4;
+	if  (this.Brake < 0)
+		this.Brake = 0;
 	this.Throttle = control.channel[0] / 4;
+	if  (this.Throttle < 0)
+		this.Throttle = 0;
 
     if (serial.protocol == "usart"){
       dv.setUint8(0,  this.serial_start_frame_display_to_esc,true);
