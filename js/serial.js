@@ -403,20 +403,16 @@ this.CRC8                       = 0x00    ;
 	message.Phase_1_current_max = message.Phase_1_current_max_LSB && (message.Phase_1_current_max_MSB << 8);
 	message.Phase_1_voltage_max = message.Phase_1_voltage_max_LSB && (message.Phase_1_voltage_max_MSB << 8);
 
+	// filter some interesting datas for the graph
 	var messageFiltered = Object.keys(message).reduce((acc, elem) => {
 		if (!elem.startsWith("BMS") && !elem.startsWith("CRC") && !elem.startsWith("ESC_Version") && !elem.startsWith("Type") && !elem.endsWith("LSB")  && !elem.endsWith("MSB") ) acc[elem] = message[elem]
 		return acc
 	}, {})
-	//console.log(messageFiltered)
 
     // Trick to convert calculated Checksum to unsigned
     //this.readdv.setInt16(16,calcChecksum,true);
     //calcChecksum = this.readdv.getUint16(16,true);
 
-//	  return !obj[0].startsWith("BMS") && !obj[0].startsWith("CRC") && !obj[0].startsWith("ESC_Version") && !obj[0].startsWith("Type") && !obj[0].endsWith("LSB")  && !obj[0].endsWith("MSB") ;
-	
-//	let messageFiltered2 = Object.keys( message ).filter( function(key){ return true; });
-		
     if ( message.CRC8 == calcChecksum ){
 		
 	
