@@ -102,7 +102,7 @@ function switchView(newView){
       commanddiv.style.display   = (!serial.binary) ? "block" : "none";
       statsdiv.style.display     = (statsIn.checked) ? "block" : "none";
   
-      loggerdiv.style.height = 54 + (statsdiv.style.display == "none") * 13 + (commanddiv.style.display == "none") * 13 + "%";
+      loggerdiv.style.height = 54 +  "%";
       chartdiv.style.display = "none";
       controlcnv.style.display = "none";
       controldiv.style.display = "none";
@@ -111,8 +111,10 @@ function switchView(newView){
       plot_btn.style.visibility = "hidden";
       break;
     case "chart":
-      controlcnv.style.display = "none";
-      controldiv.style.display = "none";
+      chartdiv.style.height = 50 +  "%";
+      controldiv.style.height = 50 + "%";
+	  controlcnv.style.display = "block";
+      controldiv.style.display = "block";
       loggerdiv.style.display = "none";
       statsdiv.style.display   = "none";
       commanddiv.style.display = "none";
@@ -122,13 +124,17 @@ function switchView(newView){
       graph.updateGraph();
       break;
     case "control":
+      chartdiv.style.height = 50 +  "%";
+      controldiv.style.height = 50 + "%";
       loggerdiv.style.display  = "none";
-      chartdiv.style.display   = "none";
-      outputdiv.style.display  = "none";
+      chartdiv.style.display   = "block";
+      outputdiv.style.display = "block";
       statsdiv.style.display   = "none";
       commanddiv.style.display = "none";
       controlcnv.style.display = "block";
       controldiv.style.display = "block";
+      plot_btn.style.visibility = "visible";
+      graph.updateGraph();
       control.initCanvas();
       break;
   }

@@ -10,7 +10,7 @@ class Serial {
     this.bufferSize = size;
     this.writeBuffer = new ArrayBuffer(this.bufferSize);
     this.writedv = new DataView(this.writeBuffer);
-    this.messageSize = 18;
+    this.messageSize = 20;
     this.readBuffer = new ArrayBuffer(this.messageSize);
     this.readdv = new DataView(this.readBuffer);
     this.writeOffset = 0;
@@ -32,7 +32,8 @@ class Serial {
                         5:'BatADC',
                         6:'BatV',
                         7:'TempADC',
-                        8:'Temp'
+						8:'curDC_max', 
+                        9:'Temp'
                         };
   }
 
@@ -233,22 +234,24 @@ class Serial {
     }
 
     let message = {};
-    message.cmd1     = this.readdv.getInt16(2,true);
-    message.cmd2     = this.readdv.getInt16(4,true);
-    message.currentDC= this.readdv.getInt16(6,true);
-    message.speedL   = this.readdv.getInt16(8,true);
-    message.BatV     = this.readdv.getInt16(10,true);
-    message.Temp     = this.readdv.getInt16(12,true);
-    message.cmdLed   = this.readdv.getUint16(14,true);
-    message.checksum = this.readdv.getUint16(16,true);
+    message.cmd1     		= this.readdv.getInt16(2,true);
+    message.cmd2     		= this.readdv.getInt16(4,true);
+    message.currentDC		= this.readdv.getInt16(6,true);
+    message.speedMeas   		= this.readdv.getInt16(8,true);
+    message.BatV     		= this.readdv.getInt16(10,true);
+    message.Temp     		= this.readdv.getInt16(12,true);
+    message.currentMaxPhA   = this.readdv.getInt16(14,true);
+    message.speedMotor      = this.readdv.getInt16(16,true);
+    message.checksum 		= this.readdv.getUint16(18,true);
     let calcChecksum = frame ^ 
                        message.cmd1 ^ 
                        message.cmd2 ^ 
                        message.currentDC ^ 
-                       message.speedL ^ 
+                       message.speedMeas ^ 
                        message.BatV ^ 
                        message.Temp ^ 
-                       message.cmdLed;
+                       message.currentMaxPhA ^ 
+                       message.speedMotor;
     
     // Trick to convert calculated Checksum to unsigned
     this.readdv.setInt16(16,calcChecksum,true);
